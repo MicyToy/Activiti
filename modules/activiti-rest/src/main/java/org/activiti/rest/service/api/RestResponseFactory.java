@@ -13,64 +13,34 @@
 
 package org.activiti.rest.service.api;
 
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.form.FormData;
 import org.activiti.engine.form.FormProperty;
 import org.activiti.engine.form.StartFormData;
 import org.activiti.engine.form.TaskFormData;
-import org.activiti.engine.history.HistoricActivityInstance;
-import org.activiti.engine.history.HistoricDetail;
-import org.activiti.engine.history.HistoricFormProperty;
-import org.activiti.engine.history.HistoricIdentityLink;
-import org.activiti.engine.history.HistoricProcessInstance;
-import org.activiti.engine.history.HistoricTaskInstance;
-import org.activiti.engine.history.HistoricVariableInstance;
-import org.activiti.engine.history.HistoricVariableUpdate;
+import org.activiti.engine.history.*;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
+import org.activiti.engine.impl.form.EnumFormType;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.task.Attachment;
-import org.activiti.engine.task.Comment;
-import org.activiti.engine.task.Event;
-import org.activiti.engine.task.IdentityLink;
-import org.activiti.engine.task.Task;
+import org.activiti.engine.task.*;
 import org.activiti.rest.common.application.ContentTypeResolver;
 import org.activiti.rest.service.api.engine.AttachmentResponse;
 import org.activiti.rest.service.api.engine.CommentResponse;
 import org.activiti.rest.service.api.engine.EventResponse;
 import org.activiti.rest.service.api.engine.RestIdentityLink;
-import org.activiti.rest.service.api.engine.variable.BooleanRestVariableConverter;
-import org.activiti.rest.service.api.engine.variable.DateRestVariableConverter;
-import org.activiti.rest.service.api.engine.variable.DoubleRestVariableConverter;
-import org.activiti.rest.service.api.engine.variable.IntegerRestVariableConverter;
-import org.activiti.rest.service.api.engine.variable.LongRestVariableConverter;
-import org.activiti.rest.service.api.engine.variable.QueryVariable;
-import org.activiti.rest.service.api.engine.variable.RestVariable;
+import org.activiti.rest.service.api.engine.variable.*;
 import org.activiti.rest.service.api.engine.variable.RestVariable.RestVariableScope;
-import org.activiti.rest.service.api.engine.variable.RestVariableConverter;
-import org.activiti.rest.service.api.engine.variable.ShortRestVariableConverter;
-import org.activiti.rest.service.api.engine.variable.StringRestVariableConverter;
 import org.activiti.rest.service.api.form.FormDataResponse;
 import org.activiti.rest.service.api.form.RestEnumFormProperty;
 import org.activiti.rest.service.api.form.RestFormProperty;
-import org.activiti.rest.service.api.history.HistoricActivityInstanceResponse;
-import org.activiti.rest.service.api.history.HistoricDetailResponse;
-import org.activiti.rest.service.api.history.HistoricIdentityLinkResponse;
-import org.activiti.rest.service.api.history.HistoricProcessInstanceResponse;
-import org.activiti.rest.service.api.history.HistoricTaskInstanceResponse;
-import org.activiti.rest.service.api.history.HistoricVariableInstanceResponse;
+import org.activiti.rest.service.api.history.*;
 import org.activiti.rest.service.api.identity.GroupResponse;
 import org.activiti.rest.service.api.identity.MembershipResponse;
 import org.activiti.rest.service.api.identity.UserInfoResponse;
@@ -85,6 +55,12 @@ import org.activiti.rest.service.api.runtime.process.ExecutionResponse;
 import org.activiti.rest.service.api.runtime.process.ProcessInstanceResponse;
 import org.activiti.rest.service.api.runtime.task.TaskResponse;
 import org.apache.commons.lang3.StringUtils;
+
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 
 /**
@@ -686,7 +662,9 @@ public class RestResponseFactory {
         restFormProp.setReadable(formProp.isReadable());
         restFormProp.setRequired(formProp.isRequired());
         restFormProp.setWritable(formProp.isWritable());
-        if ("enum".equals(restFormProp.getType())) {
+//        if ("enum".equals(restFormProp.getType())) {
+          //only EnumFormType can get form values
+        if (formProp.getType() instanceof EnumFormType) {
           Object values = formProp.getType().getInformation("values");
           if (values != null) {
             @SuppressWarnings("unchecked")
